@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
 
-
-    private FragmentManager fm=this.getSupportFragmentManager();
     private MyFragmentManager myFm=MyFragmentManager.getInstance();
 
 
@@ -42,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_download:
-                    myFm.splide(MyFragmentTag.DOWNLOAD,fm);
+                    myFm.splide(MyFragmentTag.DOWNLOAD);
                     return true;
                 case R.id.navigation_market:
-                    myFm.splide(MyFragmentTag.MARKET,fm);
+                    myFm.splide(MyFragmentTag.MARKET);
                     return true;
                 case R.id.navigation_notifications:
                     return true;
@@ -60,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myFm.splide(MyFragmentTag.MARKET,fm);
+        myFm.setFm(getSupportFragmentManager());
+
+        myFm.splide(MyFragmentTag.PROGRESS);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
 
         verifyStoragePermissions(this);
 
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.progress_menu:
-                myFm.splide(MyFragmentTag.PROGRESS,fm);
+                myFm.splide(MyFragmentTag.PROGRESS);
                 return true;
         }
         return super.onOptionsItemSelected(item);

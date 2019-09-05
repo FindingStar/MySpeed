@@ -26,6 +26,7 @@ public class MyFragmentManager{
     private static MyFragmentManager myFragmentManager;
     private LinkedList<Fragment> fragmentStack=new LinkedList<>();
     private Fragment[] fragments={new DownloadFragment(),new PanFragment(),new ProgressFragment(),new MarketFragment()};
+    private FragmentManager fm;
 
     private MyFragmentManager(){
         for (Fragment fragment:fragments) {
@@ -40,11 +41,15 @@ public class MyFragmentManager{
         return myFragmentManager;
     }
 
+    public void setFm(FragmentManager fm) {
+        this.fm = fm;
+    }
+
     public Fragment getFragment(MyFragmentTag tag){
         return fragments[tag.ordinal()];
     }
 
-    public void splide(MyFragmentTag tag,FragmentManager fm){
+    public void splide(MyFragmentTag tag){
         Fragment fragment=fragments[tag.ordinal()];
         if (!fragment.isAdded()){
             push(fragment,fm);
@@ -56,16 +61,12 @@ public class MyFragmentManager{
 
     //入栈,  hide-add-show
     private void push(Fragment fragment,FragmentManager fm){
-        if (!fragmentStack.contains(fragment)){
-            fragmentStack.push(fragment);
-        }
 
         FragmentTransaction transition=fm.beginTransaction();
         for (Fragment frag:fragmentStack) {
-            if (frag!=null){
+            if (frag!=fragment){
                 transition.hide(frag);
             }
-
         }
         transition.add(R.id.fragment_content,fragment)
                 .show(fragment)
@@ -76,7 +77,6 @@ public class MyFragmentManager{
     public Fragment peek(){
         return fragmentStack.getFirst();
     }
-
 
     //推到栈顶(冒泡)  hide-show
     private void top(Fragment fragment,FragmentManager fm){
@@ -99,5 +99,6 @@ public class MyFragmentManager{
                 .commit();
 
     }
+
 }
 

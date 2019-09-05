@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,11 +93,8 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
 
                 }
 
-                // 以后研究
-                Looper.prepare();
-                Toast.makeText(context,"用时"+((System.currentTimeMillis()-fileInfo.getStartTime())/1000)+"s",Toast.LENGTH_SHORT)
-                        .show();
-                Looper.loop();
+                // toast 用时
+                Log.d(TAG, "run:   用时 "+(System.currentTimeMillis()-fileInfo.getStartTime()));
 
             }
         }.start();
@@ -113,6 +111,7 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
         private SeekBar seekBar;
         private TextView speedText;
         private TextView lengthText;
+        private Button opentBt;
 
         private long length;
 
@@ -161,6 +160,8 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
             seekBar = itemView.findViewById(R.id.seekBar);
             speedText = itemView.findViewById(R.id.speedText);
             lengthText = itemView.findViewById(R.id.lengthText);
+            opentBt=itemView.findViewById(R.id.openBt);
+
 
         }
 

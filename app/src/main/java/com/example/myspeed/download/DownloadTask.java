@@ -2,12 +2,17 @@ package com.example.myspeed.download;
 
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +20,7 @@ import java.util.Map;
 public class DownloadTask implements Runnable, Serializable {
 
     public static final String TAG = "DownloadTask";
+    private static final int BSIZE=1024;
 
     private long progress;
 
@@ -55,27 +61,28 @@ public class DownloadTask implements Runnable, Serializable {
             }
             connection.setRequestProperty("Range", "bytes=" + start + "-" + end);
 
-            RandomAccessFile out = new RandomAccessFile(filePath, "rw");
-            out.seek(start);
+            FileChannel channel=new RandomAccessFile(filePath, "rw").getChannel();
+            channel.position(start);
 
             synchronized (this) {
                 status = Status.DOWNLOADING;
             }
 
-            InputStream in = connection.getInputStream();
-            int i;
-            while ((i = in.read()) != -1) {
-                out.write(i);
+            BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb=new StringBuilder();
+            String s;
+            while (( s=in.readLine()) != null) {
+                sb.append(s);
                 synchronized (this) {
                     progress++;
                 }
             }
+            channel.write(ByteBuffer.wrap(s.getBytes()));
             synchronized (this) {
                 status = Status.FINISHED;
             }
 
             Log.d(TAG, "run: "+id+"  have finised ");
-            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

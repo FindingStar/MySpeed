@@ -11,10 +11,11 @@
 
     <TextView
         android:id="@+id/fileNameText"
-        android:text="fileName"
         android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_height="match_parent" />
+        android:text="fileName"
+        android:textColor="#FFC107" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -58,11 +59,19 @@
         android:layout_weight="1"
         android:background="#4CAF50"
         android:backgroundTint="#4CAF50"
-        android:text="@string/stop"
+        android:text="@string/title_stop"
         android:textAllCaps="false"
         android:textColor="#F44336"
         android:textStyle="bold" />
 
+    <Button
+        android:id="@+id/openBt"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FF9800"
+        android:text="@string/title_open"
+        android:textColor="#673AB7" />
 
 
 </LinearLayout>

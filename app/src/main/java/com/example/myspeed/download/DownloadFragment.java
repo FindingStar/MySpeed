@@ -69,7 +69,7 @@ public class DownloadFragment extends Fragment {
                 MyFragmentManager myFm=MyFragmentManager.getInstance();
                 ProgressFragment progressFrag= (ProgressFragment) myFm.getFragment(MyFragmentTag.PROGRESS);
                 progressFrag.setArguments(args);
-                myFm.splide(MyFragmentTag.PROGRESS,getActivity().getSupportFragmentManager());
+                myFm.splide(MyFragmentTag.PROGRESS);
 
                 HttpURLConnection connection= null;
                 try {
@@ -87,7 +87,7 @@ public class DownloadFragment extends Fragment {
         pan_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyFragmentManager.getInstance().splide(MyFragmentTag.PAN,getActivity().getSupportFragmentManager());
+                MyFragmentManager.getInstance().splide(MyFragmentTag.PAN);
             }
         });
 

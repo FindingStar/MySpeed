@@ -1,6 +1,7 @@
 package com.example.myspeed.pan;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class PanWebClient extends WebViewClient {
 
-    private FragmentActivity activity;
+    private Context context;
 
     private Map<String, String> querys = new HashMap<>();
     private boolean downed=false;
@@ -57,8 +58,8 @@ public class PanWebClient extends WebViewClient {
     private Pattern pattern;
     private Matcher matcher;
 
-    public PanWebClient(FragmentActivity activity) {
-        this.activity = activity;
+    public PanWebClient(Context context) {
+        this.context=context;
     }
 
 
@@ -75,7 +76,9 @@ public class PanWebClient extends WebViewClient {
 
         sameDownload(request);
         return super.shouldInterceptRequest(view, request);
+
     }
+
 
     public void sameDownload(WebResourceRequest request) {
 
@@ -130,9 +133,9 @@ public class PanWebClient extends WebViewClient {
                     args.putString("flag","pan_download");
 
                     MyFragmentManager myFm=MyFragmentManager.getInstance();
-                    final ProgressFragment progressFragment= (ProgressFragment) myFm.getFragment(MyFragmentTag.PAN);
+                    final ProgressFragment progressFragment= (ProgressFragment) myFm.getFragment(MyFragmentTag.PROGRESS);
                     progressFragment.setArguments(args);
-                    myFm.splide(MyFragmentTag.PROGRESS,activity.getSupportFragmentManager());
+                    myFm.splide(MyFragmentTag.PROGRESS);
 
                     new Thread(){
                         @Override
@@ -154,10 +157,10 @@ public class PanWebClient extends WebViewClient {
                         }
                     }.start();
 
+
                 }
             }
         }
-
 
     }
 
@@ -173,7 +176,7 @@ public class PanWebClient extends WebViewClient {
         String referUrl = null;
         if (matcher.matches()) {
             referUrl = request.getUrl().toString();
-            SharedPreferences sharedPref = activity.getSharedPreferences("config", MODE_PRIVATE);
+            SharedPreferences sharedPref = context.getSharedPreferences("config", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("referUrl", referUrl);
             editor.commit();
@@ -188,7 +191,7 @@ public class PanWebClient extends WebViewClient {
 
             int end = query.indexOf("&order=time");
             query = query.substring(0, end);
-            SharedPreferences sharedPref = activity.getSharedPreferences("config", MODE_PRIVATE);
+            SharedPreferences sharedPref = context.getSharedPreferences("config", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("queryUrl", query);
             editor.commit();
@@ -204,7 +207,7 @@ public class PanWebClient extends WebViewClient {
 
             final String url = request.getUrl().toString();
 
-            SharedPreferences sharedPreferences = activity.getSharedPreferences("config", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences("config", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("downReferUrl", url);
             editor.commit();
@@ -212,7 +215,7 @@ public class PanWebClient extends WebViewClient {
             new Thread() {
                 @Override
                 public void run() {
-                    SharedPreferences sPreferences = activity.getSharedPreferences("config", MODE_PRIVATE);
+                    SharedPreferences sPreferences = context.getSharedPreferences("config", MODE_PRIVATE);
                     String referUrl = sPreferences.getString("referUrl", null);
                     if (referUrl != null) {
 
@@ -236,7 +239,7 @@ public class PanWebClient extends WebViewClient {
             CookieManager cookieManager = CookieManager.getInstance();
             String cookie = cookieManager.getCookie(url);
 
-            SharedPreferences sPreferences = activity.getSharedPreferences("config", MODE_PRIVATE);
+            SharedPreferences sPreferences = context.getSharedPreferences("config", MODE_PRIVATE);
             String referUrl = sPreferences.getString("referUrl", null);
 
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -284,7 +287,7 @@ public class PanWebClient extends WebViewClient {
             String downcookie = cookieManager1.getCookie("https://pcs.baidu.com/rest/2.0/pcs/file?method=plantcookie&type=ett");
             downcookie = downcookie + ";PANWEB=1";
 
-            SharedPreferences sharedPreferences = activity.getSharedPreferences("config", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences("config", MODE_PRIVATE);
             String downUrl = sharedPreferences.getString("queryUrl", "");
             String downReferUrl = sharedPreferences.getString("downReferUrl", "");
             downUrl = "https://pan.baidu.com/api/download?" + downUrl;

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myspeed.R;
+import com.example.myspeed.base.MyFragmentManager;
+import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.Constrants;
 import com.example.myspeed.download.DownloadTask;
 
@@ -42,6 +44,15 @@ public class ProgressFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 
     @Nullable
     @Override
@@ -88,6 +99,8 @@ public class ProgressFragment extends Fragment {
         }
         fileInfo.setUrl(url);
 
+
+
         while (adapter == null) {
 
         }
@@ -102,6 +115,7 @@ public class ProgressFragment extends Fragment {
             new Thread() {
                 @Override
                 public void run() {
+
                     startDownload(fileInfo, connection,params);
                 }
             }.start();
