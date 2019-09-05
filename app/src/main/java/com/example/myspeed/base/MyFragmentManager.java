@@ -1,10 +1,15 @@
 package com.example.myspeed.base;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.myspeed.MarketFragment;
 import com.example.myspeed.R;
+import com.example.myspeed.download.DownloadFragment;
+import com.example.myspeed.pan.PanFragment;
+import com.example.myspeed.progress.ProgressFragment;
 
 import java.util.LinkedList;
 
@@ -13,12 +18,44 @@ import java.util.LinkedList;
  * 管理 fragment  hide，show  显示
  *LinkedList 用作栈
  */
+
+
+
 public class MyFragmentManager{
 
-    public LinkedList<Fragment> fragmentStack=new LinkedList<>();
+    private static MyFragmentManager myFragmentManager;
+    private LinkedList<Fragment> fragmentStack=new LinkedList<>();
+    private Fragment[] fragments={new DownloadFragment(),new PanFragment(),new ProgressFragment(),new MarketFragment()};
+
+    private MyFragmentManager(){
+        for (Fragment fragment:fragments) {
+            fragmentStack.add(fragment);
+        }
+    }
+
+    public static MyFragmentManager getInstance(){
+        if (myFragmentManager==null){
+            myFragmentManager=new MyFragmentManager();
+        }
+        return myFragmentManager;
+    }
+
+    public Fragment getFragment(MyFragmentTag tag){
+        return fragments[tag.ordinal()];
+    }
+
+    public void splide(MyFragmentTag tag,FragmentManager fm){
+        Fragment fragment=fragments[tag.ordinal()];
+        if (!fragment.isAdded()){
+            push(fragment,fm);
+        }else {
+            top(fragment,fm);
+        }
+    }
+
 
     //入栈,  hide-add-show
-    public void push(Fragment fragment,FragmentManager fm){
+    private void push(Fragment fragment,FragmentManager fm){
         if (!fragmentStack.contains(fragment)){
             fragmentStack.push(fragment);
         }
@@ -42,7 +79,7 @@ public class MyFragmentManager{
 
 
     //推到栈顶(冒泡)  hide-show
-    public void top(Fragment fragment,FragmentManager fm){
+    private void top(Fragment fragment,FragmentManager fm){
         FragmentTransaction transaction=fm.beginTransaction();
 
         int index=fragmentStack.indexOf(fragment);
@@ -63,3 +100,4 @@ public class MyFragmentManager{
 
     }
 }
+

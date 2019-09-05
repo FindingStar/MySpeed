@@ -30,7 +30,7 @@ public class PanFragment extends Fragment {
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
 
-        webView.setWebViewClient(new PanWebClient(getActivity(),this));
+        webView.setWebViewClient(new PanWebClient(getActivity()));
         webView.loadUrl("https://pan.baidu.com/");
 
         return view;

@@ -38,13 +38,10 @@ public class ProgressFragment extends Fragment {
 
     private static ProgressFragment progressFragment = new ProgressFragment();
 
-    private ProgressFragment() {
+    public ProgressFragment() {
 
     }
 
-    public static ProgressFragment getInstance() {
-        return progressFragment;
-    }
 
     @Nullable
     @Override

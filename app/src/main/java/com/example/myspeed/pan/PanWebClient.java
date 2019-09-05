@@ -17,6 +17,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.myspeed.MainActivity;
 import com.example.myspeed.R;
+import com.example.myspeed.base.MyFragmentManager;
+import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.DownloadFragment;
 import com.example.myspeed.progress.ProgressFragment;
 
@@ -46,7 +48,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class PanWebClient extends WebViewClient {
 
     private FragmentActivity activity;
-    private Fragment panFragment;
 
     private Map<String, String> querys = new HashMap<>();
     private boolean downed=false;
@@ -56,9 +57,8 @@ public class PanWebClient extends WebViewClient {
     private Pattern pattern;
     private Matcher matcher;
 
-    public PanWebClient(FragmentActivity activity,Fragment panFragment) {
+    public PanWebClient(FragmentActivity activity) {
         this.activity = activity;
-        this.panFragment=panFragment;
     }
 
 
@@ -128,7 +128,11 @@ public class PanWebClient extends WebViewClient {
                     // 网盘下载调用，先得实例化 fragment
                     Bundle args=new Bundle();
                     args.putString("flag","pan_download");
-                    ProgressFragment.getInstance().setArguments(args);
+
+                    MyFragmentManager myFm=MyFragmentManager.getInstance();
+                    final ProgressFragment progressFragment= (ProgressFragment) myFm.getFragment(MyFragmentTag.PAN);
+                    progressFragment.setArguments(args);
+                    myFm.splide(MyFragmentTag.PROGRESS,activity.getSupportFragmentManager());
 
                     new Thread(){
                         @Override
@@ -141,7 +145,7 @@ public class PanWebClient extends WebViewClient {
                                 Map<String,String> params=new HashMap<>();
                                 params.put("Cookie",cookie);
                                 params.put("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-                                ProgressFragment.getInstance().download(url,connection,params);
+                                progressFragment.download(url,connection,params);
 
 
                             } catch (IOException e) {
@@ -149,11 +153,7 @@ public class PanWebClient extends WebViewClient {
                             }
                         }
                     }.start();
-                    if (!ProgressFragment.getInstance().isAdded()){
-                        MainActivity.myFm.push(ProgressFragment.getInstance(),activity.getSupportFragmentManager());
-                    }else {
-                        MainActivity.myFm.top(ProgressFragment.getInstance(),activity.getSupportFragmentManager());
-                    }
+
                 }
             }
         }

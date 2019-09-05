@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myspeed.MainActivity;
 import com.example.myspeed.R;
+import com.example.myspeed.base.MyFragmentManager;
+import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.pan.PanFragment;
 import com.example.myspeed.progress.FileInfo;
 import com.example.myspeed.progress.ProgressFragment;
@@ -38,8 +40,6 @@ public class DownloadFragment extends Fragment {
     private Button ordinary_bt;
     private Button pan_bt;
 
-    private PanFragment panFragment=new PanFragment();
-
     private static final String TAG = "DownloadFragment";
 
     public DownloadFragment(){
@@ -60,11 +60,16 @@ public class DownloadFragment extends Fragment {
         ordinary_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 String url = editText.getText().toString();
 
                 Bundle args=new Bundle();
                 args.putString("flag","ordinary_download");
-                ProgressFragment.getInstance().setArguments(args);
+                MyFragmentManager myFm=MyFragmentManager.getInstance();
+                ProgressFragment progressFrag= (ProgressFragment) myFm.getFragment(MyFragmentTag.PROGRESS);
+                progressFrag.setArguments(args);
+                myFm.splide(MyFragmentTag.PROGRESS,getActivity().getSupportFragmentManager());
 
                 HttpURLConnection connection= null;
                 try {
@@ -72,13 +77,8 @@ public class DownloadFragment extends Fragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                ProgressFragment.getInstance().download(url,connection,null);
 
-                if (!ProgressFragment.getInstance().isAdded()){
-                    MainActivity.myFm.push(ProgressFragment.getInstance(),getActivity().getSupportFragmentManager());
-                }else {
-                    MainActivity.myFm.top(ProgressFragment.getInstance(),getActivity().getSupportFragmentManager());
-                }
+                progressFrag.download(url,connection,null);
 
             }
         });
@@ -87,11 +87,7 @@ public class DownloadFragment extends Fragment {
         pan_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!panFragment.isAdded()){
-                    MainActivity.myFm.push(panFragment,getActivity().getSupportFragmentManager());
-                }else{
-                    MainActivity.myFm.top(panFragment,getActivity().getSupportFragmentManager());
-                }
+                MyFragmentManager.getInstance().splide(MyFragmentTag.PAN,getActivity().getSupportFragmentManager());
             }
         });
 

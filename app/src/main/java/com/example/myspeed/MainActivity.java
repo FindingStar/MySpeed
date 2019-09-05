@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.myspeed.base.MyFragmentManager;
+import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.DownloadFragment;
 import com.example.myspeed.progress.ProgressFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,43 +30,22 @@ public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
 
-    private ProgressFragment progressFragment=ProgressFragment.getInstance();
-    private DownloadFragment downloadFragment=new DownloadFragment();
-    private MarketFragment marketFragment=new MarketFragment();
-    private Fragment[] fragments={downloadFragment,marketFragment};
 
-    public FragmentManager fm=this.getSupportFragmentManager();
-    public static MyFragmentManager myFm=new MyFragmentManager();
+    private FragmentManager fm=this.getSupportFragmentManager();
+    private MyFragmentManager myFm=MyFragmentManager.getInstance();
 
-    private Menu menu;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment fragment=null;
             switch (item.getItemId()) {
                 case R.id.navigation_download:
-                    fragment=fragments[0];
-                    if (!fragment.isAdded()){
-
-                        myFm.push(fragment,fm);
-
-                    }else {
-                        myFm.top(fragment,fm);
-
-                    }
-
+                    myFm.splide(MyFragmentTag.DOWNLOAD,fm);
                     return true;
                 case R.id.navigation_market:
-                    fragment=fragments[1];
-                    if (!fragment.isAdded()){
-                        myFm.push(fragment,fm);
-
-                    }else {
-                        myFm.top(fragment,fm);
-                    }
+                    myFm.splide(MyFragmentTag.MARKET,fm);
                     return true;
                 case R.id.navigation_notifications:
                     return true;
@@ -80,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myFm.push(downloadFragment,fm);
+        myFm.splide(MyFragmentTag.MARKET,fm);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
 
         verifyStoragePermissions(this);
 
@@ -99,13 +81,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.progress_menu:
-                if (!progressFragment.isAdded()){
-                    myFm.push(progressFragment,fm);
-
-                }else {
-                    myFm.top(progressFragment,fm);
-                }
-
+                myFm.splide(MyFragmentTag.PROGRESS,fm);
                 return true;
         }
         return super.onOptionsItemSelected(item);
