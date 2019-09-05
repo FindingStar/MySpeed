@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MySpeed</string>
+    <string name="title_download">下载</string>
+    <string name="title_market">市场</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="title_pan_download">网盘下载</string>
+    <string name="title_ordinary_download">一般下载</string>
+
+    <string name="stop">暂停</string>
+</resources>
