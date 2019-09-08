@@ -61,23 +61,23 @@ public class DownloadTask implements Runnable, Serializable {
             }
             connection.setRequestProperty("Range", "bytes=" + start + "-" + end);
 
-            FileChannel channel=new RandomAccessFile(filePath, "rw").getChannel();
-            channel.position(start);
+            // 这儿感觉 nio 不行， 速度没变， 使用BufferedRandomAccessFile oio
+            BufferedRandomAccessFile out=new BufferedRandomAccessFile(filePath, "rw");
+            out.overSeek(start);
 
             synchronized (this) {
                 status = Status.DOWNLOADING;
             }
 
-            BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder sb=new StringBuilder();
-            String s;
-            while (( s=in.readLine()) != null) {
-                sb.append(s);
+            BufferedInputStream in=new BufferedInputStream(connection.getInputStream());
+            byte[] bytes=new byte[1024];
+            int i;
+            while ((i=in.read(bytes))!=-1) {
+                out.write(bytes);
                 synchronized (this) {
-                    progress++;
+                    progress=progress+i;
                 }
             }
-            channel.write(ByteBuffer.wrap(s.getBytes()));
             synchronized (this) {
                 status = Status.FINISHED;
             }
