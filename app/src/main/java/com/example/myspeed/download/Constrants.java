@@ -2,5 +2,5 @@ package com.example.myspeed.download;
 
 public class Constrants {
 
-    public static int ThreadCount=3;
+    public static int ThreadCount=5;
 }

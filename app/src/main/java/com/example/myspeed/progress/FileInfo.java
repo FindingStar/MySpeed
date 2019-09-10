@@ -1,6 +1,7 @@
 package com.example.myspeed.progress;
 
 import com.example.myspeed.download.DownloadTask;
+import com.example.myspeed.download.ThreadManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,14 +15,8 @@ public class FileInfo implements Serializable {
     private long length;
     private long startTime;
 
+    private ThreadManager threadManager=new ThreadManager();
 
-    private List<DownloadTask> tasks= Collections.synchronizedList(new ArrayList<DownloadTask>());
-
-
-
-    private String speed;
-
-    private boolean runing;
 
     public FileInfo(String fileName){
         this.fileName=fileName;
@@ -29,6 +24,10 @@ public class FileInfo implements Serializable {
     }
     public FileInfo(){
 
+    }
+
+    public ThreadManager getThreadManager() {
+        return threadManager;
     }
 
     public void setStartTime(long startTime) {
@@ -66,15 +65,11 @@ public class FileInfo implements Serializable {
     public long getPosition() {
 
         long position = 0;
-        for (DownloadTask task:tasks) {
+        for (DownloadTask task:threadManager.tasks) {
             position=position+task.getProgress();
         }
         return  position;
 
-    }
-
-    public void setTasks(List<DownloadTask> threads) {
-        this.tasks=threads;
     }
 
 

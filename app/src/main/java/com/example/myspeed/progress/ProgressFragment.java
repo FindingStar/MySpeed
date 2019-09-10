@@ -17,6 +17,7 @@ import com.example.myspeed.base.MyFragmentManager;
 import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.Constrants;
 import com.example.myspeed.download.DownloadTask;
+import com.example.myspeed.download.ThreadManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,13 +113,13 @@ public class ProgressFragment extends Fragment {
             e.printStackTrace();
             Log.e(TAG, "download: ---------- fileInfo  add  failed");
         } finally {
-            new Thread() {
+            new Thread(){
                 @Override
                 public void run() {
-
                     startDownload(fileInfo, connection,params);
                 }
             }.start();
+
         }
 
 
@@ -150,26 +151,23 @@ public class ProgressFragment extends Fragment {
             Log.e(TAG, "startDownload: ----------- 创建读取 文件路径 出错");
         }
 
-        ExecutorService exec = Executors.newCachedThreadPool();
-
-        List<DownloadTask> tasks = Collections.synchronizedList(new ArrayList<DownloadTask>());
+        ThreadManager threadManager=fileInfo.getThreadManager();
 
         for (int i = 0; i < Constrants.ThreadCount; i++) {
-            DownloadTask downloadTask = new DownloadTask(i, i * num, (i + 1) * num - 1, filePath);
+            DownloadTask downloadTask = new DownloadTask(i, i * num, (i + 1) * num - 1, filePath,threadManager);
             downloadTask.setUrl(fileInfo.getUrl());
             downloadTask.setParams(params);
-            exec.execute(downloadTask);
-            tasks.add(downloadTask);
+            threadManager.exec.execute(downloadTask);
+            threadManager.tasks.add(downloadTask);
 
         }
         if (!(Constrants.ThreadCount * num == length)) {
-            DownloadTask downloadTask = new DownloadTask(Constrants.ThreadCount, Constrants.ThreadCount * num, length - 1, filePath);
+            DownloadTask downloadTask = new DownloadTask(Constrants.ThreadCount, Constrants.ThreadCount * num, length - 1, filePath,threadManager);
             downloadTask.setUrl(fileInfo.getUrl());
             downloadTask.setParams(params);
-            exec.execute(downloadTask);
-            tasks.add(downloadTask);
+            threadManager.exec.execute(downloadTask);
+            threadManager.tasks.add(downloadTask);
         }
-        fileInfo.setTasks(tasks);
 
     }
 

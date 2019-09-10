@@ -8,5 +8,5 @@
     <string name="title_ordinary_download">一般下载</string>
 
     <string name="title_stop">暂停</string>
-    <string name="title_open">打开</string>
+    <string name="title_continue">继续</string>
 </resources>

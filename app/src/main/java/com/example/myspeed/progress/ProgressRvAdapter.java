@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myspeed.MainActivity;
 import com.example.myspeed.R;
+import com.example.myspeed.download.Status;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
         long waitStart=System.currentTimeMillis();
         while (fileInfo.getLength() == 0) {
             if ((System.currentTimeMillis()-waitStart)>3000){
-                Log.e(TAG, "onBindViewHolder:   getLength  slowly" );
+                Log.e(TAG, "onBindViewHolder:   init  slowly" );
             }
         }
 
@@ -111,9 +112,27 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
         private SeekBar seekBar;
         private TextView speedText;
         private TextView lengthText;
-        private Button opentBt;
+        private Button stopBt;
 
         private long length;
+
+        private View.OnClickListener clickListener=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.stopBt:
+                        FileInfo fileInfo=files.get(getAdapterPosition());
+                        if (fileInfo.getThreadManager().status==Status.DOWNLOADING){
+                            stopBt.setText(R.string.title_continue);
+                            fileInfo.getThreadManager().pause();
+                        }else if (fileInfo.getThreadManager().status==Status.STOPING){
+                            stopBt.setText(R.string.title_stop);
+                            fileInfo.getThreadManager().goon();
+                        }
+                        return;
+                }
+            }
+        };
 
         private Handler handler = new Handler() {
 
@@ -160,8 +179,8 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
             seekBar = itemView.findViewById(R.id.seekBar);
             speedText = itemView.findViewById(R.id.speedText);
             lengthText = itemView.findViewById(R.id.lengthText);
-            opentBt=itemView.findViewById(R.id.openBt);
-
+            stopBt=itemView.findViewById(R.id.stopBt);
+            stopBt.setOnClickListener(clickListener);
 
         }
 
@@ -175,7 +194,12 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
 
         private void setLength(long length) {
             this.length = length;
-            lengthText.setText("L : " + length+" bytes");
+            if (length/1024>1024){
+                lengthText.setText("L : " + (length/1024)/1024+" m");
+            }else {
+                lengthText.setText("L : " + (length/1024)+" kb");
+            }
+
         }
 
     }

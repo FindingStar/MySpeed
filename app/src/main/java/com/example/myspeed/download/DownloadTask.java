@@ -20,7 +20,6 @@ import java.util.Map;
 public class DownloadTask implements Runnable, Serializable {
 
     public static final String TAG = "DownloadTask";
-    private static final int BSIZE=1024;
 
     private long progress;
 
@@ -31,14 +30,15 @@ public class DownloadTask implements Runnable, Serializable {
     private long start, end;
     private String filePath;
 
-    private Status status = Status.STOPING;
+    private ThreadManager threadManager;
 
 
-    public DownloadTask(int id, long start, long end, String filePath) {
+    public DownloadTask(int id, long start, long end, String filePath,ThreadManager threadManager) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.filePath = filePath;
+        this.threadManager=threadManager;
     }
 
     public void setUrl(String url) {
@@ -65,32 +65,27 @@ public class DownloadTask implements Runnable, Serializable {
             BufferedRandomAccessFile out=new BufferedRandomAccessFile(filePath, "rw");
             out.overSeek(start);
 
-            synchronized (this) {
-                status = Status.DOWNLOADING;
-            }
-
             BufferedInputStream in=new BufferedInputStream(connection.getInputStream());
             byte[] bytes=new byte[1024];
             int i;
             while ((i=in.read(bytes))!=-1) {
-                out.write(bytes);
                 synchronized (this) {
+                    while(threadManager.status==Status.STOPING){
+                        wait();
+                    }
+                    out.write(bytes);
                     progress=progress+i;
                 }
             }
-            synchronized (this) {
-                status = Status.FINISHED;
-            }
+
 
             Log.d(TAG, "run: "+id+"  have finised ");
         } catch (IOException e) {
             e.printStackTrace();
+        }catch (InterruptedException e){
+            e.printStackTrace();
         }
 
-    }
-
-    public Status getStatus() {
-        return status;
     }
 
     public synchronized long getProgress() {
@@ -102,6 +97,6 @@ public class DownloadTask implements Runnable, Serializable {
 
     @Override
     public String toString() {
-        return "Id: " + id + "  Progress : " + progress + " Status :" + status + "  State : " + Thread.currentThread().getState() + "  Name :  " + Thread.currentThread().getName();
+        return "Id: " + id + "  Progress : " + progress + "  State : " + Thread.currentThread().getState() + "  Name :  " + Thread.currentThread().getName();
     }
 }
