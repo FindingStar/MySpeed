@@ -51,7 +51,7 @@ public class PanWebClient extends WebViewClient {
     private Context context;
 
     private Map<String, String> querys = new HashMap<>();
-    private boolean downed=false;
+    private boolean downed = false;
 
     // path , random ,app_id, cookie
     private String baseUrl = "https://pcs.baidu.com/rest/2.0/pcs/file?method=download";
@@ -59,7 +59,7 @@ public class PanWebClient extends WebViewClient {
     private Matcher matcher;
 
     public PanWebClient(Context context) {
-        this.context=context;
+        this.context = context;
     }
 
 
@@ -80,89 +80,126 @@ public class PanWebClient extends WebViewClient {
     }
 
 
-    public void sameDownload(WebResourceRequest request) {
+    /**
+     * 通过 webview 下载
+     * 统一格式
+     *
+     * @param request
+     */
+    private void sameDownload(WebResourceRequest request) {
 
         //app_id
-        if (request.getUrl().getQueryParameter("app_id") != null) {
-            querys.put("app_id", request.getUrl().getQueryParameter("app_id"));
+        if (querys.get("app_id") == null) {
+            if (request.getUrl().getQueryParameter("app_id") != null) {
+                querys.put("app_id", request.getUrl().getQueryParameter("app_id"));
+                return;
+            }
         }
 
         // path = u+ "%2F" +tt
-        pattern = Pattern.compile("https://hm.baidu.com/hm.gif?.+");
-        matcher = pattern.matcher(request.getUrl().toString());
-        String u = null, tt = null;
-        if (matcher.matches()) {
-            u = request.getUrl().getQueryParameter("u");
-            tt = request.getUrl().getQueryParameter("tt");
-            if (u != null) {
-                if (u.contains("=")){
-                    int start = u.indexOf("=") + 1;
-                    int end = u.indexOf("&");
-                    u = u.substring(start, end);
-                    querys.put("u", u);
+        if (querys.get("u") == null) {
+
+            pattern = Pattern.compile("https://hm.baidu.com/hm.gif?.+");
+            matcher = pattern.matcher(request.getUrl().toString());
+            String u = null;
+            if (matcher.matches()) {
+                u = request.getUrl().getQueryParameter("u");
+                if (u != null) {
+                    if (u.contains("=")) {
+                        int start = u.indexOf("=") + 1;
+                        int end = u.indexOf("&");
+                        u = u.substring(start, end);
+                        querys.put("u", u);
+                        return;
+                    }
                 }
             }
-            if (tt != null && !tt.equals("百度网盘-我的文件")) {
-                try {
-                    tt = URLEncoder.encode(tt, "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                String[] ts = tt.split("%7C");
-                tt = ts[0];
-                querys.put("tt", tt);
-            }
 
-            String ep=request.getUrl().getQueryParameter("ep");
-            if (ep!=null){
-                pattern=Pattern.compile("wap_click_highDownload_single?.+");
-                matcher=pattern.matcher(ep);
-                if (matcher.matches()){
-                    //random
-                    Random random = new Random();
+        }
 
-                    String path= querys.get("u")+ "%2F" +querys.get("tt");
-                    final String url=baseUrl+"&path="+path+"&random="+random.nextInt(1)+"&app_id="+querys.get("app_id");
-
-                    //Cookie
-                    CookieManager cookieManager = CookieManager.getInstance();
-                    final String cookie = cookieManager.getCookie("https://pcs.baidu.com/rest/2.0/pcs/file?method=plantcookie&type=ett");
-
-                    // 网盘下载调用，先得实例化 fragment
-                    Bundle args=new Bundle();
-                    args.putString("flag","pan_download");
-
-                    MyFragmentManager myFm=MyFragmentManager.getInstance();
-                    final ProgressFragment progressFragment= (ProgressFragment) myFm.getFragment(MyFragmentTag.PROGRESS);
-                    progressFragment.setArguments(args);
-                    myFm.splide(MyFragmentTag.PROGRESS);
-
-                    new Thread(){
-                        @Override
-                        public void run() {
-                            try {
-                                HttpURLConnection connection= (HttpURLConnection) new URL(url).openConnection();
-                                connection.setRequestProperty("Cookie",cookie);
-                                connection.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-
-                                Map<String,String> params=new HashMap<>();
-                                params.put("Cookie",cookie);
-                                params.put("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-                                progressFragment.download(url,connection,params);
-
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }.start();
-
-
+        if (querys.get("tt") == null) {
+            String tt = null;
+            pattern = Pattern.compile("https://hm.baidu.com/hm.gif?.+");
+            matcher = pattern.matcher(request.getUrl().toString());
+            if (matcher.matches()) {
+                tt = request.getUrl().getQueryParameter("tt");
+                if ((tt != null) && (!tt.equals("百度网盘-我的文件")) && (!tt.equals("百度网盘，让美好永远陪伴"))) {
+                    try {
+                        tt = URLEncoder.encode(tt, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    String[] ts = tt.split("%7C");
+                    tt = ts[0];
+                    querys.put("tt", tt);
+                    return;
                 }
             }
         }
 
+
+        String ep = request.getUrl().getQueryParameter("ep");
+        if (ep != null) {
+            pattern = Pattern.compile("wap_click_highDownload_single?.+");
+            matcher = pattern.matcher(ep);
+            if (matcher.matches()) {
+
+                if ((querys.get("u")==null)|(querys.get("tt")==null)){
+                    return;
+                }
+
+                //random
+                Random random = new Random();
+
+                String path = querys.get("u") + "%2F" + querys.get("tt");
+                final String url = baseUrl + "&path=" + path + "&random=" + random.nextInt(1) + "&app_id=" + querys.get("app_id");
+
+                //Cookie
+                CookieManager cookieManager = CookieManager.getInstance();
+                final String cookie = cookieManager.getCookie("https://pcs.baidu.com/rest/2.0/pcs/file?method=plantcookie&type=ett");
+
+                // 网盘下载调用，先得实例化 fragment
+                Bundle args = new Bundle();
+                args.putString("flag", "pan_download");
+
+                MyFragmentManager myFm = MyFragmentManager.getInstance();
+                final ProgressFragment progressFragment = (ProgressFragment) myFm.getFragment(MyFragmentTag.PROGRESS);
+                progressFragment.setArguments(args);
+                myFm.splide(MyFragmentTag.PROGRESS);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                            connection.setRequestProperty("Cookie", cookie);
+                            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
+
+                            Map<String, String> params = new HashMap<>();
+                            params.put("Cookie", cookie);
+                            params.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
+                            progressFragment.download(url, connection, params);
+
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+                querys.clear();
+
+
+            }
+
+        }
+
     }
+
+
+
+
+
+
 
 
     /*

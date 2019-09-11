@@ -2,6 +2,7 @@ package com.example.myspeed.pan;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +21,29 @@ public class PanFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.pan_fragment,container,false);
+        final View view=inflater.inflate(R.layout.pan_fragment,container,false);
 
-        WebView webView=view.findViewById(R.id.pan_wv);
+        final WebView webView=view.findViewById(R.id.pan_wv);
 
-        WebSettings webSettings=webView.getSettings();
+        final WebSettings webSettings=webView.getSettings();
         webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
         webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
 
         webView.setWebViewClient(new PanWebClient(getActivity()));
+        webView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction()==KeyEvent.ACTION_DOWN){
+                    if ((keyCode==KeyEvent.KEYCODE_BACK)&&(webView.canGoBack())){
+                        webView.goBack();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         webView.loadUrl("https://pan.baidu.com/");
 
         return view;

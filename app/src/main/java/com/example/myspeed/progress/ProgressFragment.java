@@ -15,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myspeed.R;
 import com.example.myspeed.base.MyFragmentManager;
 import com.example.myspeed.base.MyFragmentTag;
+import com.example.myspeed.baseException.FileExistException;
 import com.example.myspeed.download.Constrants;
 import com.example.myspeed.download.DownloadTask;
 import com.example.myspeed.download.ThreadManager;
+import com.example.myspeed.utils.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,20 +87,21 @@ public class ProgressFragment extends Fragment {
         }
 
         final FileInfo fileInfo = new FileInfo();
+        String name=null;
         if (flag != null) {
             if (flag.equals("ordinary_download")) {
                 String[] urls = url.split("/");
-                fileInfo.setFileName(urls[urls.length - 1]);
+                name=urls[urls.length - 1];
             }
             if (flag.equals("pan_download")) {
                 int start = url.indexOf("path=");
                 int end = url.indexOf("&random");
                 String fileName = url.substring(start, end);
                 String[] ts = fileName.split("%2F");
-                fileName = ts[ts.length - 1];
-                fileInfo.setFileName(fileName);
+                name = ts[ts.length - 1];
             }
         }
+        fileInfo.setFileName(name);
         fileInfo.setUrl(url);
 
 

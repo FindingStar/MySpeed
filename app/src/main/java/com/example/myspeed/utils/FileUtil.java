@@ -11,15 +11,20 @@ import java.util.regex.Pattern;
  */
 public class FileUtil {
 
-    public static boolean search(){
-
+    public static boolean search(String dir,String dstName){
+        File file=new File(dir);
+        String[] list=file.list(new MyFileFilter("名字后缀"));
         return true;
     }
 
-    class MyFileFilter implements FilenameFilter{
+    static class MyFileFilter implements FilenameFilter{
+        private Pattern pattern;
+        private MyFileFilter(String regex){
+            pattern=Pattern.compile(regex);
+        }
         @Override
         public boolean accept(File dir, String name) {
-            return false;
+            return pattern.matcher(name).matches();
         }
     }
 
