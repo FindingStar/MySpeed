@@ -131,7 +131,8 @@ public class PanWebClient extends WebViewClient {
                     }
                     String[] ts = tt.split("%7C");
                     tt = ts[0];
-                    querys.put("tt", tt);
+                    // +  得自己转一下
+                    querys.put("tt",tt);
                     return;
                 }
             }
@@ -144,14 +145,20 @@ public class PanWebClient extends WebViewClient {
             matcher = pattern.matcher(ep);
             if (matcher.matches()) {
 
-                if ((querys.get("u")==null)|(querys.get("tt")==null)){
+                // u 可为空， 低一级目录
+                if (querys.get("tt")==null){
                     return;
                 }
 
                 //random
                 Random random = new Random();
+                String path;
+                if (querys.get("u")==null){
+                    path= querys.get("tt");
+                }else {
+                    path= querys.get("u") + "%2F" + querys.get("tt");
+                }
 
-                String path = querys.get("u") + "%2F" + querys.get("tt");
                 final String url = baseUrl + "&path=" + path + "&random=" + random.nextInt(1) + "&app_id=" + querys.get("app_id");
 
                 //Cookie
