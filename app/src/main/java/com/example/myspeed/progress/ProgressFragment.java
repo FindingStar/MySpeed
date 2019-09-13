@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
@@ -98,7 +99,13 @@ public class ProgressFragment extends Fragment {
                 int end = url.indexOf("&random");
                 String fileName = url.substring(start, end);
                 String[] ts = fileName.split("%2F");
-                name = ts[ts.length - 1];
+                try{
+                    name= URLDecoder.decode( ts[ts.length - 1],"utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    name = ts[ts.length - 1];
+                }
+
             }
         }
         fileInfo.setFileName(name);
@@ -110,9 +117,14 @@ public class ProgressFragment extends Fragment {
 
         }
         try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.add(fileInfo);
+                    adapter.notifyDataSetChanged();
+                }
+            });
 
-            adapter.add(fileInfo);
-            adapter.notifyDataSetChanged();
         } catch (NullPointerException e) {
             e.printStackTrace();
             Log.e(TAG, "download: ---------- fileInfo  add  failed");

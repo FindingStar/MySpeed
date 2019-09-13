@@ -36,6 +36,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,11 +104,12 @@ public class PanWebClient extends WebViewClient {
             matcher = pattern.matcher(request.getUrl().toString());
             String u = null;
             if (matcher.matches()) {
+
                 u = request.getUrl().getQueryParameter("u");
                 if (u != null) {
-                    if (u.contains("=")) {
-                        int start = u.indexOf("=") + 1;
-                        int end = u.indexOf("&");
+                    if (u.contains("path")) {
+                        int start = u.indexOf("path") + 5;
+                        int end = u.indexOf("&page");
                         u = u.substring(start, end);
                         querys.put("u", u);
                         return;
@@ -124,14 +126,17 @@ public class PanWebClient extends WebViewClient {
             if (matcher.matches()) {
                 tt = request.getUrl().getQueryParameter("tt");
                 if ((tt != null) && (!tt.equals("百度网盘-我的文件")) && (!tt.equals("百度网盘，让美好永远陪伴"))) {
+                    String[] ts = tt.split("\\|");
+                    tt = ts[0];
+                    // URLEncoder 会将空格编码成一个+， 即 n空格 -》1+
+                    tt=tt.replace(" ",",#&");
+                    // +  得自己转一下
                     try {
-                        tt = URLEncoder.encode(tt, "utf-8");
+                        tt= URLEncoder.encode(tt,"utf-8");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    String[] ts = tt.split("%7C");
-                    tt = ts[0];
-                    // +  得自己转一下
+                    tt=tt.replace("%2C%23%26","%20");
                     querys.put("tt",tt);
                     return;
                 }
@@ -153,11 +158,14 @@ public class PanWebClient extends WebViewClient {
                 //random
                 Random random = new Random();
                 String path;
-                if (querys.get("u")==null){
-                    path= querys.get("tt");
+                if(querys.get("u")==null){
+                    path="%2F" + querys.get("tt");
+                }else if (querys.get("u").equals("%2F")){
+                    path= querys.get("u") +querys.get("tt");
                 }else {
                     path= querys.get("u") + "%2F" + querys.get("tt");
                 }
+
 
                 final String url = baseUrl + "&path=" + path + "&random=" + random.nextInt(1) + "&app_id=" + querys.get("app_id");
 
