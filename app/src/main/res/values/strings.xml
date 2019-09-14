@@ -5,8 +5,20 @@
     <string name="title_notifications">Notifications</string>
 
     <string name="title_pan_download">网盘下载</string>
-    <string name="title_ordinary_download">一般下载</string>
+    <string name="title_url">链接</string>
+
+    <string name="title_file_name">文件名称</string>
+    <string name="title_avg_speed">均速</string>
+    <string name="title_times">用时</string>
+
 
     <string name="title_stop">暂停</string>
     <string name="title_continue">继续</string>
+
+    <string name="title_pan">网盘</string>
+    <string name="title_dialog_add">添加下载任务</string>
+
+    <string name="title_downloading">下载中</string>
+    <string name="title_finished">已完成</string>
+
 </resources>

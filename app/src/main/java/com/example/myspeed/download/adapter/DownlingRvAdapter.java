@@ -1,8 +1,7 @@
-package com.example.myspeed.progress;
+package com.example.myspeed.download.adapter;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,22 +10,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myspeed.MainActivity;
 import com.example.myspeed.R;
 import com.example.myspeed.download.Status;
+import com.example.myspeed.download.entity.FileInfo;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.RecyclerViewHolder> {
+public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.MyHolder> {
 
-    public static final String TAG = "ProgressRvAdapter";
+    public static final String TAG = "DownlingRvAdapter";
 
 
     private Context context;
@@ -39,21 +37,20 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
         files.add(fileInfo);
     }
 
-    public ProgressRvAdapter(Context context) {
+    public DownlingRvAdapter(Context context) {
         this.context = context;
 
     }
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.item_progress_rv, parent, false);
-        return new RecyclerViewHolder(itemView);
+    public DownlingRvAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(context).inflate(R.layout.item_downling_rv, parent, false);
+        return new DownlingRvAdapter.MyHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerViewHolder holder, final int position) {
-
+    public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         final FileInfo fileInfo = files.get(position);
 
         holder.setFileName(fileInfo.getFileName());
@@ -107,7 +104,7 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
         return files.size();
     }
 
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    public class MyHolder extends RecyclerView.ViewHolder {
         private TextView fileNameText;
         private SeekBar seekBar;
         private TextView speedText;
@@ -122,7 +119,7 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
                 switch (view.getId()){
                     case R.id.stopBt:
                         FileInfo fileInfo=files.get(getAdapterPosition());
-                        if (fileInfo.getThreadManager().status==Status.DOWNLOADING){
+                        if (fileInfo.getThreadManager().status== Status.DOWNLOADING){
                             stopBt.setText(R.string.title_continue);
                             fileInfo.getThreadManager().pause();
                         }else if (fileInfo.getThreadManager().status==Status.STOPING){
@@ -171,7 +168,7 @@ public class ProgressRvAdapter extends RecyclerView.Adapter<ProgressRvAdapter.Re
             return handler;
         }
 
-        public RecyclerViewHolder(@NonNull View itemView) {
+        public MyHolder(@NonNull View itemView) {
 
             super(itemView);
 

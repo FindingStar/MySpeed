@@ -1,13 +1,11 @@
-package com.example.myspeed;
+package com.example.myspeed.main;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import com.example.myspeed.base.MyFragmentManager;
+import com.example.myspeed.R;
 import com.example.myspeed.base.MyFragmentTag;
-import com.example.myspeed.download.DownloadFragment;
-import com.example.myspeed.progress.ProgressFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.FragmentTransitionImpl;
 
 import android.util.Log;
 import android.view.Menu;
@@ -30,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
 
-    private MyFragmentManager myFm=MyFragmentManager.getInstance();
+    private FragmentManager fm=getSupportFragmentManager();
+    private Fragment[] fragments={new DownloadFragment(),new MarketFragment()};
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -40,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_download:
-                    myFm.splide(MyFragmentTag.DOWNLOAD);
+                    // 添加
                     return true;
                 case R.id.navigation_market:
                     myFm.splide(MyFragmentTag.MARKET);
@@ -57,10 +54,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        myFm.setFm(getSupportFragmentManager());
-
-        myFm.splide(MyFragmentTag.PROGRESS);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

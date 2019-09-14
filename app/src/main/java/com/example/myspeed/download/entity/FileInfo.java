@@ -1,4 +1,4 @@
-package com.example.myspeed.progress;
+package com.example.myspeed.download.entity;
 
 import com.example.myspeed.download.DownloadTask;
 import com.example.myspeed.download.ThreadManager;

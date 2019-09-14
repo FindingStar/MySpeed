@@ -1,15 +1,13 @@
 package com.example.myspeed.base;
 
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.myspeed.MarketFragment;
+import com.example.myspeed.main.MarketFragment;
 import com.example.myspeed.R;
-import com.example.myspeed.download.DownloadFragment;
-import com.example.myspeed.pan.PanFragment;
-import com.example.myspeed.progress.ProgressFragment;
+import com.example.myspeed.main.DownloadFragment;
+import com.example.myspeed.download.fragments.PanFragment;
 
 import java.util.LinkedList;
 

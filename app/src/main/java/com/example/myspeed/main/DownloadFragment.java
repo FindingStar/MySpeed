@@ -1,46 +1,48 @@
-package com.example.myspeed.download;
+package com.example.myspeed.main;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
-import com.example.myspeed.MainActivity;
 import com.example.myspeed.R;
 import com.example.myspeed.base.MyFragmentManager;
 import com.example.myspeed.base.MyFragmentTag;
-import com.example.myspeed.pan.PanFragment;
-import com.example.myspeed.progress.FileInfo;
-import com.example.myspeed.progress.ProgressFragment;
-import com.example.myspeed.progress.ProgressRvAdapter;
-import com.google.android.material.textfield.TextInputEditText;
+import com.example.myspeed.download.adapter.MyFragmentVpAdapter;
+import com.example.myspeed.download.fragments.DownlingFragment;
+import com.example.myspeed.download.fragments.FinishedFragment;
+import com.example.myspeed.download.fragments.PanFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 public class DownloadFragment extends Fragment {
-    private TextInputEditText editText;
-    private Button ordinary_bt;
-    private Button pan_bt;
+    private ViewPager download_vp;
+    private FloatingActionButton fab;
 
     private static final String TAG = "DownloadFragment";
+
+    private FragmentManager fm=getChildFragmentManager();
+    private Fragment[] fragments={new DownlingFragment(),new FinishedFragment(),new PanFragment()};
+
+    public View.OnClickListener clickListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.fab:
+                    // 打开对话框
+            }
+        }
+    };
 
     public DownloadFragment(){
     }
@@ -54,6 +56,12 @@ public class DownloadFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.download_fragment, container, false);
+
+        fab=view.findViewById(R.id.fab);
+        fab.setOnClickListener(clickListener);
+        download_vp=view.findViewById(R.id.download_vp);
+
+        download_vp.setAdapter(new MyFragmentVpAdapter(fm,fragments));
 
         editText = view.findViewById(R.id.ordinary_url_text);
         ordinary_bt = view.findViewById(R.id.ordinary_bt);
@@ -94,6 +102,5 @@ public class DownloadFragment extends Fragment {
         return view;
     }
 
-
-
 }
+

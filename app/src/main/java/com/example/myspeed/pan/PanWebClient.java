@@ -1,6 +1,5 @@
 package com.example.myspeed.pan;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.http.SslError;
@@ -13,30 +12,20 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
-import com.example.myspeed.MainActivity;
-import com.example.myspeed.R;
 import com.example.myspeed.base.MyFragmentManager;
 import com.example.myspeed.base.MyFragmentTag;
-import com.example.myspeed.download.DownloadFragment;
-import com.example.myspeed.progress.ProgressFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;

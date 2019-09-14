@@ -1,78 +1,21 @@
-package com.example.myspeed.progress;
+package com.example.myspeed.download.entrance;
 
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.myspeed.R;
-import com.example.myspeed.base.MyFragmentManager;
-import com.example.myspeed.base.MyFragmentTag;
-import com.example.myspeed.baseException.FileExistException;
 import com.example.myspeed.download.Constrants;
 import com.example.myspeed.download.DownloadTask;
 import com.example.myspeed.download.ThreadManager;
-import com.example.myspeed.utils.FileUtil;
+import com.example.myspeed.download.entity.FileInfo;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class ProgressFragment extends Fragment {
-
-    private static final String TAG = "ProgressFragment";
-    private ProgressRvAdapter adapter;
-
-    private static ProgressFragment progressFragment = new ProgressFragment();
-
-    public ProgressFragment() {
-
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.progress_fragment, container, false);
-
-        RecyclerView recyclerView = view.findViewById(R.id.progress_rv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ProgressRvAdapter(getContext());
-
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        return view;
-    }
-
+public class download {
     // 通用 download  入口
     public void download(String url, final HttpURLConnection connection, final Map<String,String> params) {
         if (connection == null) {
