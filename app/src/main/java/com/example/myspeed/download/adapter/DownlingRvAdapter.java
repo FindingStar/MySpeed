@@ -15,14 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myspeed.R;
-import com.example.myspeed.download.Status;
+import com.example.myspeed.download.constant.Status;
 import com.example.myspeed.download.entity.FileInfo;
+import com.example.myspeed.download.fragment.FinishedFragment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.MyHolder> {
+public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.DownlingHolder> {
 
     public static final String TAG = "DownlingRvAdapter";
 
@@ -32,9 +33,11 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.My
 
     private static final int UPDATE_SEEK = 1;
 
-
     public void add(FileInfo fileInfo) {
         files.add(fileInfo);
+    }
+    public void remove(FileInfo fileInfo) {
+        files.remove(fileInfo);
     }
 
     public DownlingRvAdapter(Context context) {
@@ -44,13 +47,13 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.My
 
     @NonNull
     @Override
-    public DownlingRvAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DownlingRvAdapter.DownlingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.item_downling_rv, parent, false);
-        return new DownlingRvAdapter.MyHolder(itemView);
+        return new DownlingRvAdapter.DownlingHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final DownlingHolder holder, int position) {
         final FileInfo fileInfo = files.get(position);
 
         holder.setFileName(fileInfo.getFileName());
@@ -90,9 +93,9 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.My
                     }
 
                 }
+                fileInfo.setEndTime(System.currentTimeMillis());
 
-                // toast 用时
-                Log.d(TAG, "run:   用时 "+(System.currentTimeMillis()-fileInfo.getStartTime()));
+                FinishedFragment.newInstance().updateUi(fileInfo);
 
             }
         }.start();
@@ -104,7 +107,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.My
         return files.size();
     }
 
-    public class MyHolder extends RecyclerView.ViewHolder {
+    public class DownlingHolder extends RecyclerView.ViewHolder {
         private TextView fileNameText;
         private SeekBar seekBar;
         private TextView speedText;
@@ -168,7 +171,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.My
             return handler;
         }
 
-        public MyHolder(@NonNull View itemView) {
+        public DownlingHolder(@NonNull View itemView) {
 
             super(itemView);
 

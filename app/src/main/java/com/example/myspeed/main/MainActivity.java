@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
             "android.permission.WRITE_EXTERNAL_STORAGE"};
 
     private FragmentManager fm=getSupportFragmentManager();
-    private Fragment[] fragments={new DownloadFragment(),new MarketFragment()};
+    private Fragment[] fragments={DownloadFragment.newInstance(),new MarketFragment()};
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -38,9 +38,13 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_download:
                     // 添加
+                    fm.beginTransaction()
+                            .add(R.id.fragment_content,fragments[0])
+                            .commit();
                     return true;
                 case R.id.navigation_market:
-                    myFm.splide(MyFragmentTag.MARKET);
+                    fm.beginTransaction()
+                            .add(R.id.fragment_content,fragments[1]);
                     return true;
                 case R.id.navigation_notifications:
                     return true;
@@ -58,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        fm.beginTransaction()
+                .add(R.id.fragment_content,fragments[0])
+                .commit();
+
         verifyStoragePermissions(this);
 
     }
@@ -70,11 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.progress_menu:
-                myFm.splide(MyFragmentTag.PROGRESS);
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 

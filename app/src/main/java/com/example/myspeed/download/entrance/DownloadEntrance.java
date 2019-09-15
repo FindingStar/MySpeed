@@ -2,9 +2,9 @@ package com.example.myspeed.download.entrance;
 
 import android.util.Log;
 
-import com.example.myspeed.download.Constrants;
-import com.example.myspeed.download.DownloadTask;
-import com.example.myspeed.download.ThreadManager;
+import com.example.myspeed.download.constant.Constrants;
+import com.example.myspeed.download.fragment.DownlingFragment;
+import com.example.myspeed.download.util.ThreadManager;
 import com.example.myspeed.download.entity.FileInfo;
 
 import java.io.File;
@@ -12,23 +12,16 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Map;
 
-public class download {
-    // 通用 download  入口
-    public void download(String url, final HttpURLConnection connection, final Map<String,String> params) {
-        if (connection == null) {
-            Log.e(TAG, "download: ------ connection is null");
-            throw new RuntimeException("connection is null ");
-        }
+public class DownloadEntrance {
 
-        String flag = null;
-        try {
-            flag = getArguments().getString("flag");
-        } catch (NullPointerException e) {
-            Log.d(TAG, "onCreateView: --------无此flag");
-        }
+    private static final String TAG="downloadEntrance";
+
+    // 通用 download  入口
+    public void download(String url, final Map<String,String> params, String flag) {
 
         final FileInfo fileInfo = new FileInfo();
         String name=null;
@@ -54,39 +47,34 @@ public class download {
         fileInfo.setFileName(name);
         fileInfo.setUrl(url);
 
+        new Thread(){
+            @Override
+            public void run() {
+                startDownload(fileInfo,params);
+            }
+        }.start();
 
-
-        while (adapter == null) {
-
-        }
-        try {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.add(fileInfo);
-                    adapter.notifyDataSetChanged();
-                }
-            });
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            Log.e(TAG, "download: ---------- fileInfo  add  failed");
-        } finally {
-            new Thread(){
-                @Override
-                public void run() {
-                    startDownload(fileInfo, connection,params);
-                }
-            }.start();
-
-        }
-
+        DownlingFragment.newInstance().updateUi(fileInfo);
 
     }
 
-    private void startDownload(FileInfo fileInfo, HttpURLConnection connection,Map<String,String> params) {
+    private void startDownload(FileInfo fileInfo,Map<String,String> params) {
         long length = 0;
 
+        String url=fileInfo.getUrl();
+
+        HttpURLConnection connection= null;
+        try {
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            if (params!=null){
+                for (String k:params.keySet()) {
+                    connection.setRequestProperty(k,params.get(k));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
         length = connection.getContentLengthLong();
         fileInfo.setLength(length);
 

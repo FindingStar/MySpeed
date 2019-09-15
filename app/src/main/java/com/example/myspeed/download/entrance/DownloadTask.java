@@ -1,18 +1,16 @@
-package com.example.myspeed.download;
+package com.example.myspeed.download.entrance;
 
 import android.util.Log;
 
+import com.example.myspeed.download.util.ThreadManager;
+import com.example.myspeed.download.constant.Status;
+import com.example.myspeed.download.util.BufferedRandomAccessFile;
+
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +68,7 @@ public class DownloadTask implements Runnable, Serializable {
             int i;
             while ((i=in.read(bytes))!=-1) {
                 synchronized (this) {
-                    while(threadManager.status==Status.STOPING){
+                    while(threadManager.status== Status.STOPING){
                         wait();
                     }
                     out.write(bytes);

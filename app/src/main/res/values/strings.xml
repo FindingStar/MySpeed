@@ -9,7 +9,8 @@
 
     <string name="title_file_name">文件名称</string>
     <string name="title_avg_speed">均速</string>
-    <string name="title_times">用时</string>
+    <string name="title_time">用时</string>
+    <string name="title_size">大小</string>
 
 
     <string name="title_stop">暂停</string>

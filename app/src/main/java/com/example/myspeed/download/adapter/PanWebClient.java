@@ -1,4 +1,4 @@
-package com.example.myspeed.pan;
+package com.example.myspeed.download.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,14 +12,19 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.example.myspeed.R;
 import com.example.myspeed.base.MyFragmentManager;
 import com.example.myspeed.base.MyFragmentTag;
+import com.example.myspeed.download.entrance.DownloadEntrance;
+import com.example.myspeed.download.fragment.PanFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -41,7 +46,7 @@ public class PanWebClient extends WebViewClient {
     private Context context;
 
     private Map<String, String> querys = new HashMap<>();
-    private boolean downed = false;
+    private boolean succees = false;
 
     // path , random ,app_id, cookie
     private String baseUrl = "https://pcs.baidu.com/rest/2.0/pcs/file?method=download";
@@ -64,8 +69,21 @@ public class PanWebClient extends WebViewClient {
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
-        sameDownload(request);
-        return super.shouldInterceptRequest(view, request);
+        if (!succees){
+            sameDownload(request);
+            return super.shouldInterceptRequest(view, request);
+        }else {
+            try {
+                InputStream in=context.getAssets().open("timg.gif");
+                Log.d(TAG, "shouldInterceptRequest: "+request.getUrl());
+                WebResourceResponse response=new WebResourceResponse("image/png","UTF-8",in);
+                return response;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, " assets open failed");
+            }
+            return super.shouldInterceptRequest(view, request);
+        }
 
     }
 
@@ -166,32 +184,15 @@ public class PanWebClient extends WebViewClient {
                 Bundle args = new Bundle();
                 args.putString("flag", "pan_download");
 
-                MyFragmentManager myFm = MyFragmentManager.getInstance();
-                final ProgressFragment progressFragment = (ProgressFragment) myFm.getFragment(MyFragmentTag.PROGRESS);
-                progressFragment.setArguments(args);
-                myFm.splide(MyFragmentTag.PROGRESS);
+                // dowling
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                            connection.setRequestProperty("Cookie", cookie);
-                            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
+                Map<String, String> params = new HashMap<>();
+                params.put("Cookie", cookie);
+                params.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
+                new DownloadEntrance().download(url,params,"pan_download");
 
-                            Map<String, String> params = new HashMap<>();
-                            params.put("Cookie", cookie);
-                            params.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-                            progressFragment.download(url, connection, params);
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
                 querys.clear();
-
+                succees=true;
 
             }
 

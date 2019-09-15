@@ -1,4 +1,4 @@
-package com.example.myspeed.download.fragments;
+package com.example.myspeed.download.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,19 +14,36 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myspeed.R;
-import com.example.myspeed.pan.PanWebClient;
+import com.example.myspeed.download.adapter.PanWebClient;
 
 public class PanFragment extends Fragment {
     private static final String TAG = "PanFragment";
+    private WebView webView;
 
+    private static PanFragment PanFragment;
+
+    private Thread viewThread;
+
+    private PanFragment() {
+
+    }
+
+    public static PanFragment newInstance() {
+        if (PanFragment == null) {
+            PanFragment=new PanFragment();
+            return PanFragment;
+        }
+        return PanFragment;
+    }
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view=inflater.inflate(R.layout.pan_fragment,container,false);
+        final View view = inflater.inflate(R.layout.pan_fragment, container, false);
 
-        final WebView webView=view.findViewById(R.id.pan_wv);
+        webView = view.findViewById(R.id.pan_wv);
 
-        final WebSettings webSettings=webView.getSettings();
+        final WebSettings webSettings = webView.getSettings();
         webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
         webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
         webSettings.setLoadsImagesAutomatically(true);
@@ -36,8 +53,8 @@ public class PanFragment extends Fragment {
         webView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction()==KeyEvent.ACTION_DOWN){
-                    if ((keyCode==KeyEvent.KEYCODE_BACK)&&(webView.canGoBack())){
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if ((keyCode == KeyEvent.KEYCODE_BACK) && (webView.canGoBack())) {
                         webView.goBack();
                         return true;
                     }
@@ -48,6 +65,18 @@ public class PanFragment extends Fragment {
         webView.loadUrl("https://pan.baidu.com/");
 
         return view;
+    }
+
+    public void backUi() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                webView.loadUrl("https://pan.baidu.com/");
+            }
+        });
+
+
     }
 
     @Override

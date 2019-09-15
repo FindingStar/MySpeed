@@ -1,19 +1,16 @@
 package com.example.myspeed.download.entity;
 
-import com.example.myspeed.download.DownloadTask;
-import com.example.myspeed.download.ThreadManager;
+import com.example.myspeed.download.entrance.DownloadTask;
+import com.example.myspeed.download.util.ThreadManager;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class FileInfo implements Serializable {
     public static final String TAG="FileInfo";
     private String fileName;
     private String url;
     private long length;
-    private long startTime;
+    private long startTime,endTime;
 
     private ThreadManager threadManager=new ThreadManager();
 
@@ -24,6 +21,15 @@ public class FileInfo implements Serializable {
     }
     public FileInfo(){
 
+    }
+
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     public ThreadManager getThreadManager() {

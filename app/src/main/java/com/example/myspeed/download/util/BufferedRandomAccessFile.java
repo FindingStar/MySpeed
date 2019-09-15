@@ -1,4 +1,4 @@
-package com.example.myspeed.download;
+package com.example.myspeed.download.util;
 
 import java.io.BufferedInputStream;
 

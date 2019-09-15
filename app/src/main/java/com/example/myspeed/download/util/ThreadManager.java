@@ -1,4 +1,7 @@
-package com.example.myspeed.download;
+package com.example.myspeed.download.util;
+
+import com.example.myspeed.download.constant.Status;
+import com.example.myspeed.download.entrance.DownloadTask;
 
 import java.util.ArrayList;
 import java.util.Collections;

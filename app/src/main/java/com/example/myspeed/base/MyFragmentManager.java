@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.myspeed.main.MarketFragment;
 import com.example.myspeed.R;
 import com.example.myspeed.main.DownloadFragment;
-import com.example.myspeed.download.fragments.PanFragment;
+import com.example.myspeed.download.fragment.PanFragment;
 
 import java.util.LinkedList;
 
@@ -23,7 +23,7 @@ public class MyFragmentManager{
 
     private static MyFragmentManager myFragmentManager;
     private LinkedList<Fragment> fragmentStack=new LinkedList<>();
-    private Fragment[] fragments={new DownloadFragment(),new PanFragment(),new ProgressFragment(),new MarketFragment()};
+    private Fragment[] fragments={};
     private FragmentManager fm;
 
     private MyFragmentManager(){
