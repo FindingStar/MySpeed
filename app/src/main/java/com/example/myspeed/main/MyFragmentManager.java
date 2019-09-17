@@ -1,13 +1,10 @@
-package com.example.myspeed.base;
+package com.example.myspeed.main;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.myspeed.main.MarketFragment;
 import com.example.myspeed.R;
-import com.example.myspeed.main.DownloadFragment;
-import com.example.myspeed.download.fragment.PanFragment;
 
 import java.util.LinkedList;
 
@@ -26,17 +23,14 @@ public class MyFragmentManager{
     private Fragment[] fragments={};
     private FragmentManager fm;
 
-    private MyFragmentManager(){
+    public MyFragmentManager(){
         for (Fragment fragment:fragments) {
             fragmentStack.add(fragment);
         }
     }
 
-    public static MyFragmentManager getInstance(){
-        if (myFragmentManager==null){
-            myFragmentManager=new MyFragmentManager();
-        }
-        return myFragmentManager;
+    public void setFragments(Fragment[] fragments) {
+        this.fragments = fragments;
     }
 
     public void setFm(FragmentManager fm) {

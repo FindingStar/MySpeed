@@ -15,10 +15,18 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myspeed.R;
 import com.example.myspeed.download.adapter.PanWebClient;
+import com.example.myspeed.download.adapter.UpdateViewListener;
 
 public class PanFragment extends Fragment {
     private static final String TAG = "PanFragment";
     private WebView webView;
+
+    private UpdateViewListener listener=new UpdateViewListener() {
+        @Override
+        public void backUi() {
+
+        }
+    };
 
     private static PanFragment PanFragment;
 
@@ -49,7 +57,9 @@ public class PanFragment extends Fragment {
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
 
-        webView.setWebViewClient(new PanWebClient(getActivity()));
+        PanWebClient client=new PanWebClient(getContext());
+        client.setListener(listener);
+        webView.setWebViewClient(client);
         webView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -64,19 +74,9 @@ public class PanFragment extends Fragment {
         });
         webView.loadUrl("https://pan.baidu.com/");
 
+
+
         return view;
-    }
-
-    public void backUi() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                webView.loadUrl("https://pan.baidu.com/");
-            }
-        });
-
-
     }
 
     @Override
@@ -97,3 +97,4 @@ public class PanFragment extends Fragment {
         Log.d(TAG, "onStop: ");
     }
 }
+

@@ -1,6 +1,7 @@
 package com.example.myspeed.download.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ public class FinishedFragment extends Fragment {
 
     private static FinishedFragment FinishedFragment;
     private FinishedRvAdapter adapter;
+
+    private static final String TAG="FinishedFragment";
 
     private FinishedFragment() {
 

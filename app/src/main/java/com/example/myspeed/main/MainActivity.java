@@ -5,14 +5,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.myspeed.R;
-import com.example.myspeed.base.MyFragmentTag;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.Menu;
@@ -26,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
 
-    private FragmentManager fm=getSupportFragmentManager();
-    private Fragment[] fragments={DownloadFragment.newInstance(),new MarketFragment()};
+    private MyFragmentManager myFm=new MyFragmentManager();
+    private Fragment[] fragments={DownloadFragment.newInstance(),MarketFragment.newInstance()};
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -38,13 +36,10 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_download:
                     // 添加
-                    fm.beginTransaction()
-                            .add(R.id.fragment_content,fragments[0])
-                            .commit();
+                    myFm.splide(MyFragmentTag.DOWNLOAD);
                     return true;
                 case R.id.navigation_market:
-                    fm.beginTransaction()
-                            .add(R.id.fragment_content,fragments[1]);
+                    myFm.splide(MyFragmentTag.MARKET);
                     return true;
                 case R.id.navigation_notifications:
                     return true;
@@ -62,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        fm.beginTransaction()
-                .add(R.id.fragment_content,fragments[0])
-                .commit();
+        myFm.setFragments(fragments);
+        myFm.setFm(getSupportFragmentManager());
+
+        myFm.splide(MyFragmentTag.MARKET);
 
         verifyStoragePermissions(this);
 

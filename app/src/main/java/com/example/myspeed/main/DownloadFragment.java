@@ -8,23 +8,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.myspeed.R;
-import com.example.myspeed.base.MyFragmentManager;
-import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.adapter.MyFragmentVpAdapter;
-import com.example.myspeed.download.fragment.DownlingFragment;
 import com.example.myspeed.download.fragment.FabDialogFragment;
-import com.example.myspeed.download.fragment.FinishedFragment;
-import com.example.myspeed.download.fragment.PanFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 
 public class DownloadFragment extends Fragment {

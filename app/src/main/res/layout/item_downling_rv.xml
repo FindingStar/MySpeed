@@ -25,21 +25,6 @@
         tools:layout_conversion_absoluteWidth="57dp" />
 
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:max="100"
-        android:progress="50"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fileNameText"
-        tools:layout_conversion_absoluteHeight="18dp"
-        tools:layout_conversion_absoluteWidth="41dp" />
-
-
     <TextView
         android:id="@+id/speedText"
         android:layout_width="176dp"
@@ -58,14 +43,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/speedText"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
         tools:layout_conversion_absoluteHeight="19dp"
         tools:layout_conversion_absoluteWidth="24dp" />
 
@@ -97,6 +80,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="268dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/lengthText"
+        app:layout_constraintEnd_toEndOf="@+id/fileNameText"
+        app:layout_constraintStart_toStartOf="@+id/fileNameText"
+        app:layout_constraintTop_toBottomOf="@+id/fileNameText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,27 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.myspeed.R;
-
-public class MarketFragment extends Fragment {
-
-    private static MarketFragment marketFragment;
-
-    private MarketFragment(){
-
-    }
-
-    public static MarketFragment newInstance(){
-        if (marketFragment==null){
-            return new MarketFragment();
-        }
-        return marketFragment;
-    }
+public class MineFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.market_fragment,container,false);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.example.myspeed.download.constant.Status;
 import com.example.myspeed.download.entity.FileInfo;
 import com.example.myspeed.download.fragment.FinishedFragment;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
 
     public void add(FileInfo fileInfo) {
         files.add(fileInfo);
+        notifyItemInserted(files.size()-1);
     }
     public void remove(FileInfo fileInfo) {
         files.remove(fileInfo);
@@ -60,17 +63,18 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
         long waitStart=System.currentTimeMillis();
         while (fileInfo.getLength() == 0) {
             if ((System.currentTimeMillis()-waitStart)>3000){
-                Log.e(TAG, "onBindViewHolder:   init  slowly" );
             }
         }
 
         holder.setLength(fileInfo.getLength());
         holder.setProgress(fileInfo.getPosition() / fileInfo.getLength());
 
+        Log.d(TAG, "onBindViewHolder: " +files+"    "+fileInfo+"   "+position);
 
         new Thread() {
             @Override
             public void run() {
+                Log.d(TAG, "run:  times ");
                 while (!Thread.interrupted()) {
 
                     if (fileInfo.getLength() != 0) {
@@ -94,7 +98,6 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
 
                 }
                 fileInfo.setEndTime(System.currentTimeMillis());
-
                 FinishedFragment.newInstance().updateUi(fileInfo);
 
             }
@@ -109,7 +112,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
 
     public class DownlingHolder extends RecyclerView.ViewHolder {
         private TextView fileNameText;
-        private SeekBar seekBar;
+        private ProgressBar progressBar;
         private TextView speedText;
         private TextView lengthText;
         private Button stopBt;
@@ -145,16 +148,21 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
                 switch (msg.what) {
                     case UPDATE_SEEK:
                         if (length != 0) {
-                            seekBar.setProgress((msg.arg1 * 100 / (int) length));
+                            long p1=(length-msg.arg1)*100;
+                            double p2=p1*1.0/length;
+                            double pro=100*1.0-p2;
+                            progressBar.setProgress((int) pro);
                         }
                         double speed;
                         if (oldTime == 0) {
                             speed = 0;
                         } else {
                             //  细节
-                            long p=(msg.arg1 - oldPosition)*1000;
-                            long t=(msg.arg2 - oldTime)*1024*1024;
-                            speed=(double)p/t;
+                            double p=((msg.arg1 - oldPosition)*1.0/1024)/1024;
+
+                            double t=(msg.arg2 - oldTime)*1.0/1000;
+                            speed=p/t;
+
                         }
                         DecimalFormat decimalFormat = new DecimalFormat("#.00");
                         speed=Double.valueOf(decimalFormat.format(speed));
@@ -176,7 +184,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
             super(itemView);
 
             fileNameText = itemView.findViewById(R.id.fileNameText);
-            seekBar = itemView.findViewById(R.id.seekBar);
+            progressBar = itemView.findViewById(R.id.progressBar);
             speedText = itemView.findViewById(R.id.speedText);
             lengthText = itemView.findViewById(R.id.lengthText);
             stopBt=itemView.findViewById(R.id.stopBt);
@@ -185,7 +193,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
         }
 
         private void setProgress(long progerss) {
-            seekBar.setProgress((int) progerss);
+            progressBar.setProgress((int) progerss);
         }
 
         private void setFileName(String fileName) {

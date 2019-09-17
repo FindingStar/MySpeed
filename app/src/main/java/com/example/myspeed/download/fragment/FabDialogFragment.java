@@ -15,10 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.myspeed.R;
-import com.example.myspeed.base.MyFragmentManager;
-import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.entrance.DownloadEntrance;
-import com.example.myspeed.main.DownloadFragment;
 
 public class FabDialogFragment extends DialogFragment {
 

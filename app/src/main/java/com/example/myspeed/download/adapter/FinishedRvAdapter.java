@@ -1,6 +1,8 @@
 package com.example.myspeed.download.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myspeed.R;
 import com.example.myspeed.download.entity.FileInfo;
+import com.example.myspeed.download.util.IntentFiles;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +25,7 @@ import java.util.List;
 public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.FinishedHoler> {
 
     private List<FileInfo> fileInfos = new ArrayList<>();
-
+    public static final String TAG = "FinishedRvAdapter";
     private Context context;
 
     public FinishedRvAdapter(Context context) {
@@ -36,6 +40,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Fi
     @Override
     public FinishedHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_finished_rv, parent, false);
+        Log.d(TAG, "onCreateViewHolder:   ");
         return new FinishedHoler(view);
     }
 
@@ -54,7 +59,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Fi
         return fileInfos.size();
     }
 
-    class FinishedHoler extends RecyclerView.ViewHolder {
+    class FinishedHoler extends RecyclerView.ViewHolder implements View.OnClickListener {
         private CardView cardView;
         private ImageView thumbIv;
         private TextView nameTv, speedTv, timeTv, sizeTv;
@@ -62,6 +67,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Fi
 
         public FinishedHoler(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
 
             cardView = itemView.findViewById(R.id.cv_item_finished);
             nameTv = itemView.findViewById(R.id.name_cv_tv);
@@ -79,9 +85,7 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Fi
         }
 
         public void setTime(long time) {
-            DecimalFormat decimalFormat = new DecimalFormat("#.00");
-            double times=Double.valueOf(decimalFormat.format(time));
-            timeTv.setText(times + " s ");
+            timeTv.setText((time/1000) + " s ");
         }
 
         public void setSpeed(long size, long time) {
@@ -91,6 +95,16 @@ public class FinishedRvAdapter extends RecyclerView.Adapter<FinishedRvAdapter.Fi
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             speed = Double.valueOf(decimalFormat.format(speed));
             speedTv.setText(speed + " m/s");
+        }
+
+        @Override
+        public void onClick(View v) {
+            // open file
+            FileInfo fileInfo=fileInfos.get(this.getAdapterPosition());
+            File file=new File("/mnt/sdcard/"+fileInfo.getFileName());
+            Intent intent= IntentFiles.getVideoFileIntent(file);
+            context.startActivity(intent);
+
         }
     }
 }

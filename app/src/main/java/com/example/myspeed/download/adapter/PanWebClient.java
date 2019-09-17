@@ -12,19 +12,13 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.example.myspeed.R;
-import com.example.myspeed.base.MyFragmentManager;
-import com.example.myspeed.base.MyFragmentTag;
 import com.example.myspeed.download.entrance.DownloadEntrance;
-import com.example.myspeed.download.fragment.PanFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -53,6 +47,14 @@ public class PanWebClient extends WebViewClient {
     private Pattern pattern;
     private Matcher matcher;
 
+    private UpdateViewListener listener;
+
+    private DownloadEntrance entrance=new DownloadEntrance();
+
+    public void setListener(UpdateViewListener listener) {
+        this.listener = listener;
+    }
+
     public PanWebClient(Context context) {
         this.context = context;
     }
@@ -62,6 +64,15 @@ public class PanWebClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        pattern=Pattern.compile("yundownload:?.+");
+        matcher=pattern.matcher(request.getUrl().toString());
+        if (matcher.matches()){
+            view.loadUrl("https://pan.baidu.com/wap/home");
+            succees=false;
+
+            return true;
+        }
+
         view.loadUrl(request.getUrl().toString());
         return true;
     }
@@ -72,18 +83,8 @@ public class PanWebClient extends WebViewClient {
         if (!succees){
             sameDownload(request);
             return super.shouldInterceptRequest(view, request);
-        }else {
-            try {
-                InputStream in=context.getAssets().open("timg.gif");
-                Log.d(TAG, "shouldInterceptRequest: "+request.getUrl());
-                WebResourceResponse response=new WebResourceResponse("image/png","UTF-8",in);
-                return response;
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, " assets open failed");
-            }
-            return super.shouldInterceptRequest(view, request);
         }
+        return super.shouldInterceptRequest(view, request);
 
     }
 
@@ -105,14 +106,15 @@ public class PanWebClient extends WebViewClient {
         }
 
         // path = u+ "%2F" +tt
-        if (querys.get("u") == null) {
+        String u = request.getUrl().getQueryParameter("u");
+        if (querys.get("u") == null||querys.get("u").equals(u)) {
 
             pattern = Pattern.compile("https://hm.baidu.com/hm.gif?.+");
             matcher = pattern.matcher(request.getUrl().toString());
-            String u = null;
+
             if (matcher.matches()) {
 
-                u = request.getUrl().getQueryParameter("u");
+
                 if (u != null) {
                     if (u.contains("path")) {
                         int start = u.indexOf("path") + 5;
@@ -125,13 +127,13 @@ public class PanWebClient extends WebViewClient {
             }
 
         }
+        String tt = request.getUrl().getQueryParameter("tt");
+        if (querys.get("tt") == null||querys.get("tt").equals("tt")) {
 
-        if (querys.get("tt") == null) {
-            String tt = null;
             pattern = Pattern.compile("https://hm.baidu.com/hm.gif?.+");
             matcher = pattern.matcher(request.getUrl().toString());
             if (matcher.matches()) {
-                tt = request.getUrl().getQueryParameter("tt");
+
                 if ((tt != null) && (!tt.equals("百度网盘-我的文件")) && (!tt.equals("百度网盘，让美好永远陪伴"))) {
                     String[] ts = tt.split("\\|");
                     tt = ts[0];
@@ -189,10 +191,13 @@ public class PanWebClient extends WebViewClient {
                 Map<String, String> params = new HashMap<>();
                 params.put("Cookie", cookie);
                 params.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-                new DownloadEntrance().download(url,params,"pan_download");
+                entrance.download(url,params,"pan_download");
+
+                Log.d(TAG, "sameDownload:  start download ");
 
                 querys.clear();
                 succees=true;
+
 
             }
 

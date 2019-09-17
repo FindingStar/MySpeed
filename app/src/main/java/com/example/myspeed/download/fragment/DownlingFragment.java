@@ -49,8 +49,6 @@ public class DownlingFragment extends Fragment {
 
         }
 
-        Log.d(TAG, "onCreate: ");
-
 
     }
 
@@ -65,17 +63,16 @@ public class DownlingFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        Log.d(TAG, "onCreateView: ");
         return view;
     }
 
     public void updateUi(final FileInfo fileInfo) {
 
+        Log.d(TAG, "updateUi: "+fileInfo);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 adapter.add(fileInfo);
-                adapter.notifyDataSetChanged();
             }
         });
 
