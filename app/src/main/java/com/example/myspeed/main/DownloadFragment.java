@@ -23,7 +23,6 @@ public class DownloadFragment extends Fragment {
     private TabLayout tabLayout;
 
     private static final String TAG = "DownloadFragment";
-    private static DownloadFragment downloadFragment;
 
     public View.OnClickListener clickListener=new View.OnClickListener() {
         @Override
@@ -37,17 +36,6 @@ public class DownloadFragment extends Fragment {
             }
         }
     };
-
-    private DownloadFragment(){
-
-    }
-
-    public static DownloadFragment newInstance(){
-        if (downloadFragment==null){
-            return new DownloadFragment();
-        }
-        return downloadFragment;
-    }
 
 
 

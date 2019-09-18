@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myspeed.R;
 import com.example.myspeed.download.constant.Status;
 import com.example.myspeed.download.entity.FileInfo;
+import com.example.myspeed.download.fragment.DownlingFragment;
 import com.example.myspeed.download.fragment.FinishedFragment;
 
 import java.math.BigDecimal;
@@ -39,8 +40,11 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
         files.add(fileInfo);
         notifyItemInserted(files.size()-1);
     }
+
+
     public void remove(FileInfo fileInfo) {
         files.remove(fileInfo);
+        notifyItemRemoved(files.indexOf(fileInfo));
     }
 
     public DownlingRvAdapter(Context context) {
@@ -99,6 +103,7 @@ public class DownlingRvAdapter extends RecyclerView.Adapter<DownlingRvAdapter.Do
                 }
                 fileInfo.setEndTime(System.currentTimeMillis());
                 FinishedFragment.newInstance().updateUi(fileInfo);
+                DownlingFragment.newInstance().updateUi(fileInfo,1);
 
             }
         }.start();

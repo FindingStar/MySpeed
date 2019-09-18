@@ -15,17 +15,6 @@ public class MarketFragment extends Fragment {
 
     private static MarketFragment marketFragment;
 
-    private MarketFragment(){
-
-    }
-
-    public static MarketFragment newInstance(){
-        if (marketFragment==null){
-            return new MarketFragment();
-        }
-        return marketFragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

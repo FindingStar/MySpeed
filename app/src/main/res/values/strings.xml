@@ -22,4 +22,9 @@
     <string name="title_downloading">下载中</string>
     <string name="title_finished">已完成</string>
 
+
+    <string name="title_see_persons">查看人数</string>
+    <string name="title_shard_file_name">栈上的文件名</string>
+    <string name="title_create_time">发表时间</string>
+
 </resources>

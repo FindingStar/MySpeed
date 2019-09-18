@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.Menu;
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
 
-    private MyFragmentManager myFm=new MyFragmentManager();
-    private Fragment[] fragments={DownloadFragment.newInstance(),MarketFragment.newInstance()};
+    private Fragment[] fragments={new DownloadFragment(),new MarketFragment(),new MineFragment()};
+    private Fragment mCurrentFragment = null;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -36,12 +37,13 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_download:
                     // 添加
-                    myFm.splide(MyFragmentTag.DOWNLOAD);
+                    showFragment(0);
                     return true;
                 case R.id.navigation_market:
-                    myFm.splide(MyFragmentTag.MARKET);
+                    showFragment(1);
                     return true;
                 case R.id.navigation_notifications:
+                    showFragment(2);
                     return true;
             }
 
@@ -57,13 +59,26 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        myFm.setFragments(fragments);
-        myFm.setFm(getSupportFragmentManager());
-
-        myFm.splide(MyFragmentTag.MARKET);
-
+        navView.setSelectedItemId(navView.getMenu().getItem(0).getItemId());
         verifyStoragePermissions(this);
 
+    }
+
+    private void showFragment(int position) {
+            Fragment fragment = fragments[position];
+            if (null != fragment && mCurrentFragment != fragment) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                if (mCurrentFragment != null) {
+                    transaction.hide(mCurrentFragment);
+                }
+                mCurrentFragment = fragment;
+                if (!fragment.isAdded()) {
+                    transaction.add(R.id.fragment_content, fragment);
+                } else {
+                    transaction.show(fragment);
+                }
+                transaction.commit();
+            }
     }
 
     @Override

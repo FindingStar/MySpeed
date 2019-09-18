@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +21,7 @@ import com.example.myspeed.download.entrance.DownloadEntrance;
 
 public class DownlingFragment extends Fragment {
 
-    private static final String TAG="DownlingFragment";
+    private static final String TAG = "DownlingFragment";
 
     private DownlingRvAdapter adapter;
 
@@ -32,7 +33,7 @@ public class DownlingFragment extends Fragment {
 
     public static DownlingFragment newInstance() {
         if (downlingFragment == null) {
-            downlingFragment=new DownlingFragment();
+            downlingFragment = new DownlingFragment();
             return downlingFragment;
         }
         return downlingFragment;
@@ -42,10 +43,10 @@ public class DownlingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try{
+        try {
             String url = getArguments().getString("url");
             new DownloadEntrance().download(url, null, "ordinary_download");
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
 
@@ -66,15 +67,29 @@ public class DownlingFragment extends Fragment {
         return view;
     }
 
-    public void updateUi(final FileInfo fileInfo) {
+    public void updateUi(final FileInfo fileInfo,int flag) {
 
-        Log.d(TAG, "updateUi: "+fileInfo);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.add(fileInfo);
-            }
-        });
+        if (flag==0){
+            //add
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(),"开始下载了哦",Toast.LENGTH_SHORT).show();
+                    adapter.add(fileInfo);
+                }
+            });
+        }else if (flag==1){
+            //remove
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.remove(fileInfo);
+                }
+            });
+        }
+
+
+
 
     }
 }

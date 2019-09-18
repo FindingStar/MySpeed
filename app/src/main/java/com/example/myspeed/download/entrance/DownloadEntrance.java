@@ -54,7 +54,7 @@ public class DownloadEntrance {
             }
         }.start();
 
-        DownlingFragment.newInstance().updateUi(fileInfo);
+        DownlingFragment.newInstance().updateUi(fileInfo,0);
 
     }
 
