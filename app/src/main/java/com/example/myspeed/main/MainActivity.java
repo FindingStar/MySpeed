@@ -1,10 +1,12 @@
 package com.example.myspeed.main;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.myspeed.R;
+import com.example.myspeed.ui.message.MessageActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,6 +92,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // message_menu_item  点击 打开 消息框
+        switch (item.getItemId()){
+            case R.id.message_menu_item:
+                Intent intent=new Intent();
+                intent.setClass(this, MessageActivity.class);
+                startActivity(intent);
+                return true;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 

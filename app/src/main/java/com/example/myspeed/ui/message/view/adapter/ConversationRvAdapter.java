@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myspeed.R;
 import com.example.myspeed.databinding.ItemConverRvBinding;
 import com.example.myspeed.ui.message.model.Conversation;
+import com.example.myspeed.ui.message.model.ModelGenator;
 import com.example.myspeed.ui.message.vm.ConversationViewModel;
 
 import java.util.ArrayList;
@@ -25,8 +26,9 @@ public class ConversationRvAdapter extends RecyclerView.Adapter<ConversationRvAd
 
     public ConversationRvAdapter(Context context){
         this.context=context;
-        this.lists=new ArrayList<>();
+        this.lists= (List<Conversation>) new ModelGenator<>(Conversation.class).fill(new ArrayList<Conversation>(),10);
     }
+
 
     @NonNull
     @Override

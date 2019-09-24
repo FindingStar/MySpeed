@@ -25,9 +25,9 @@ import com.example.myspeed.ui.message.vm.ConversationViewModel;
 
 import java.util.List;
 
-public class ConversationFragment extends BaseFragment {
+public class ConversationFragment extends Fragment {
 
-    private ConversationFragment(){}
+    public ConversationFragment(){}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

@@ -1,8 +1,19 @@
 package com.example.myspeed.ui.message.model;
 
 public class RemindModel {
+    private final int index=counter;
+    private static int counter;
+
     private String remindText;
     private String remindTime;
+
+
+    RemindModel(){
+        // test
+        remindText=" remindText"+index;
+        remindTime=" remind time "+index;
+        counter++;
+    }
 
     public String getRemindText() {
         return remindText;

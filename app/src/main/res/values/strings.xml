@@ -31,7 +31,7 @@
     <string name="title_activity_message">MessageActivity</string>
 
     <string name="tab_text_remind">提醒</string>
-    <string name="tab_text_conversation">提醒</string>
+    <string name="tab_text_conversation">对话</string>
 
     <string name="text_remind_detail">提醒内容</string>
     <string name="text_remind_time">时间</string>

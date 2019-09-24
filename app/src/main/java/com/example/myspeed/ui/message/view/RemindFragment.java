@@ -8,15 +8,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.myspeed.R;
 import com.example.myspeed.databinding.FragmentMessageBinding;
 import com.example.myspeed.ui.message.view.adapter.RemindRvAdapter;
 
-public class RemindFragment extends BaseFragment {
+public class RemindFragment extends Fragment {
 
-    private RemindFragment(){}
+    public RemindFragment(){}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
